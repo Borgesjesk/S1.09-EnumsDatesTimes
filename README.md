@@ -26,4 +26,4 @@ Working with Java enums for type-safe constants with behaviour, and the java.tim
 - Maven 3.9.11
 
 ## 🚀 Installation
-`git clone `
+`git clone https://github.com/Borgesjesk/S1.09-EnumsDatesTimes.git`
