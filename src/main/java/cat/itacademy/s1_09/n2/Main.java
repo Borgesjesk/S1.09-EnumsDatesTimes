@@ -8,14 +8,8 @@ import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Main {
-
-    // Ex5 - Check if date is before today
-    public static boolean isBeforeToday(LocalDate date) {
-        return date.isBefore(LocalDate.now());
-    }
 
     public static void main(String[] args) {
 
@@ -49,48 +43,46 @@ public class Main {
         System.out.println("Ex3 - Add and subtract from dates:");
         LocalDate today = LocalDate.now();
         System.out.println("Today:              " + today);
-        System.out.println("+ 10 days:          " + today.plusDays(10));
-        System.out.println("- 3 months:         " + today.minusMonths(3));
-        System.out.println("+ 1 year:           " + today.plusYears(1));
+        System.out.println("+ 10 days:          " + DateUtils.addDays(today, 10));
+        System.out.println("- 3 months:         " + DateUtils.subtractMonths(today, 3));
+        System.out.println("+ 1 year:           " + DateUtils.addYears(today, 1));
         LocalDateTime now = LocalDateTime.now();
         System.out.println("Now:                " + now);
-        System.out.println("+ 5 hours:          " + now.plusHours(5));
-        System.out.println("- 30 minutes:       " + now.minusMinutes(30));
+        System.out.println("+ 5 hours:          " + DateUtils.addHours(now, 5));
+        System.out.println("- 30 minutes:       " + DateUtils.subtractMinutes(now, 30));
 
         // Ex4 - Format dates
         System.out.println("─".repeat(40));
         System.out.println("Ex4 - Format dates:");
         LocalDate formatDate = LocalDate.now();
         System.out.println("Default:            " + formatDate);
-        System.out.println("dd/MM/yyyy:         " + formatDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        System.out.println("dd-MM-yyyy:         " + formatDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        System.out.println("MMMM dd, yyyy:      " + formatDate.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
-        System.out.println("EEE, MMM dd yyyy:   " + formatDate.format(DateTimeFormatter.ofPattern("EEE, MMM dd yyyy")));
+        System.out.println("dd/MM/yyyy:         " + DateUtils.formatDate(formatDate, "dd/MM/yyyy"));
+        System.out.println("dd-MM-yyyy:         " + DateUtils.formatDate(formatDate, "dd-MM-yyyy"));
+        System.out.println("MMMM dd, yyyy:      " + DateUtils.formatDate(formatDate, "MMMM dd, yyyy"));
+        System.out.println("EEE, MMM dd yyyy:   " + DateUtils.formatDate(formatDate, "EEE, MMM dd yyyy"));
 
         // Ex5 - Is date before today
         System.out.println("─".repeat(40));
         System.out.println("Ex5 - Is date before today:");
         LocalDate past = LocalDate.of(2020, 6, 15);
         LocalDate future = LocalDate.of(2030, 1, 1);
-        System.out.println(past + " is before today: " + isBeforeToday(past));
-        System.out.println(future + " is before today: " + isBeforeToday(future));
+        System.out.println(past + " is before today: " + DateUtils.isBeforeToday(past));
+        System.out.println(future + " is before today: " + DateUtils.isBeforeToday(future));
 
         // Ex6 - Agenda with upcoming appointments
         System.out.println("─".repeat(40));
         System.out.println("Ex6 - Agenda — upcoming appointments:");
         LocalDateTime nowDt = LocalDateTime.now();
         List<Appointment> agenda = Arrays.asList(
-                new Appointment("Doctor",         nowDt.plusHours(2)),
-                new Appointment("Team meeting",   nowDt.plusDays(1)),
-                new Appointment("Dentist",        nowDt.minusDays(1)),
-                new Appointment("Java class",     nowDt.plusDays(2)),
-                new Appointment("Old appointment",nowDt.minusWeeks(1))
+                new Appointment("Doctor",          nowDt.plusHours(2)),
+                new Appointment("Team meeting",    nowDt.plusDays(1)),
+                new Appointment("Dentist",         nowDt.minusDays(1)),
+                new Appointment("Java class",      nowDt.plusDays(2)),
+                new Appointment("Old appointment", nowDt.minusWeeks(1))
         );
 
-        List<Appointment> upcoming = agenda.stream()
-                .filter(a -> a.getDateTime().isAfter(nowDt))
-                .sorted((a, b) -> a.getDateTime().compareTo(b.getDateTime()))
-                .collect(Collectors.toList());
+        AgendaService agendaService = new AgendaService(agenda);
+        List<Appointment> upcoming = agendaService.getUpcoming(nowDt);
 
         System.out.println("Upcoming appointments:");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
